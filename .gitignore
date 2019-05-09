@@ -1,0 +1,10 @@
+*.m~
+*.asv
+*.mat
+error_ellipse.m
+freq_sim_noisy_arm_2d.m
+freq_sim_noisy_arm_4state.m
+freq_sim_noisy_arm_5state.m
+make_data_4state.m
+make_data_5state.m
+plot_ellipse.m
