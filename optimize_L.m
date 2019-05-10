@@ -1,39 +1,26 @@
 % optimize gain
 clear all
-% load real_data
-
-% Linit = [65 45 640 5 -75];
-% Linit = [Linit zeros(1,5)
-%          zeros(1,5) Linit];
-% Linit = [16 8 155 2];
-% Linit = [80.6343 26.6417 5.5583];
 
 load sim_data
 Linit = dat.Linit;
-% Linit = [zeros(1,3) 80.63 26.64 5.56
-%          80.63 26.64 5.56 zeros(1,3)];
-% Linit = [80 26 5];
-% Linit = [Linit Linit
-%          Linit Linit];
 params = [0.14 0.1 0.066];
 f_targ = @(L) sim_error(L,params);
 Nfreq = 7;
-options = optimoptions('fminunc','Display','iter','MaxIterations',10);
-% options = optimoptions('fmincon','Display','iter','MaxFunctionEvaluations',50000,'MaxIterations',3000,'Algorithm','active-set');
-% 
-% Lopt = fmincon(f_targ,Linit,[],[],[],[],[],[],[],options);
+options = optimoptions('fmincon','Display','iter','MaxIterations',10);
+Lopt = fmincon(f_targ,Linit,[],[],[],[],[],[],[],options);
 
 % options = optimoptions('fminunc','Display','iter','MaxFunctionEvaluations',50000,'MaxIterations',3000,'Algorithm','quasi-newton');
 % 
-Lopt = fminunc(f_targ,Linit,options);
+% Lopt = fminunc(f_targ,Linit,options);
 
 global ratio_opt
-global z_opt
-global Sigma_opt
 
+% generate colormap for plotting
 col1 = [1 0.83 0.33];
 col2 = [1 0 0];
 colors = [linspace(col1(1),col2(1),Nfreq)', linspace(col1(2),col2(2),Nfreq)', linspace(col1(3),col2(3),Nfreq)'];
+
+% calculate mean of empirical data
 names = {'x','y','xy','yx'};
 for i = 1:length(names)
     a = mean(dat.(names{i}));
@@ -41,6 +28,7 @@ for i = 1:length(names)
     mu(2,:,i) = imag(a);
 end
 
+% plot post-fitting simulation data
 subplot(2,4,5); hold on
 plot([-1.5 1.5],[0 0],'k')
 plot([0 0],[-1.5 1.5],'k')

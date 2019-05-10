@@ -1,6 +1,8 @@
 *.m~
 *.asv
 *.mat
+!sim_data.mat
+!single_subj.mat
 error_ellipse.m
 freq_sim_noisy_arm_2d.m
 freq_sim_noisy_arm_4state.m

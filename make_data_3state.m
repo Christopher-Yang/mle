@@ -1,5 +1,6 @@
+% generates data for MLE and saves into
+
 clear all
-load dat.mat
 rng(2);
 
 delt = 0.005; % time step length in secs
@@ -114,17 +115,42 @@ dat.xy = squeeze(ratio(3,:,:));
 dat.yx = squeeze(ratio(4,:,:));
 save sim_data dat
 
-%%
-figure(1); clf; hold on;
-plot(ratio)
-plot([-1.5 1.5],[0 0],'k')
-plot([0 0],[-1.5 1.5],'k')
+%% plot phasors
+% generate colormap for plotting
+Nfreq = 7;
+col1 = [1 0.83 0.33];
+col2 = [1 0 0];
+colors = [linspace(col1(1),col2(1),Nfreq)', linspace(col1(2),col2(2),Nfreq)', linspace(col1(3),col2(3),Nfreq)'];
 
-figure(2); clf; hold on;
-plot(abs(fft_in))
-plot(abs(fft_out))
-xlim([0 100])
+ratio2 = permute(ratio,[3 2 1]);
 
-figure(3); clf; hold on;
-plot(targ)
-plot(hand)
+figure
+for i = 1:Nfreq
+    subplot(1,4,1); hold on
+    plot([-1.5 1.5],[0 0],'k')
+    plot([0 0],[-1.5 1.5],'k')
+    plot(ratio2(i,:,1),'.','Color',colors(i,:))
+    axis square
+    title('XX')
+    
+    subplot(1,4,2); hold on
+    plot([-1.5 1.5],[0 0],'k')
+    plot([0 0],[-1.5 1.5],'k')
+    plot(ratio2(i,:,2),'.','Color',colors(i,:))
+    axis square
+    title('YY')
+    
+    subplot(1,4,3); hold on
+    plot([-1.5 1.5],[0 0],'k')
+    plot([0 0],[-1.5 1.5],'k')
+    plot(ratio2(i,:,3),'.','Color',colors(i,:))
+    axis square
+    title('XY')
+    
+    subplot(1,4,4); hold on
+    plot([-1.5 1.5],[0 0],'k')
+    plot([0 0],[-1.5 1.5],'k')
+    plot(ratio2(i,:,4),'.','Color',colors(i,:))
+    axis square
+    title('YX')
+end
