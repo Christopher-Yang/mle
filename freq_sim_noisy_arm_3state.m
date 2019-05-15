@@ -12,12 +12,11 @@ else
 end
 
 delt = 0.005; % time step length in secs
-delay = 0.25; % amount of delay in seconds
-sigma = 50*sqrt(delt); % execution noise
+sigma = 150*sqrt(delt); % execution noise
 t = 0:delt:20-delt; % x axis for graphs
 
 % sum-of-sines target movement
-nstep = ceil(22/delt); % number of time steps
+nstep = ceil(23/delt); % number of time steps
 
 % create state space model in discrete time
 A = [0 1 0
@@ -64,9 +63,12 @@ end
 
 % compute fourier transforms
 e = 2/delt; % remove first two seconds of tracking data for cleaner spectra
+delay = 0.4/delt; % modeling sensorimotor delay
+start = e+delay+1;
+stop = (20/delt);
 
-traj = hand(:,:,(e+1):end);
-traj(:,Nreps+1,:) = target(:,(e+1):end);
+traj = hand(:,:,(e+1):(e+1)+stop);
+traj(:,Nreps+1,:) = target(:,start:start+stop);
 traj_avg = mean(traj,3);
 traj_fft = fft(traj - repmat(traj_avg,[1 1 length(traj)]),[],3);
 

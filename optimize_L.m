@@ -1,18 +1,26 @@
 % optimize gain
 clear all
+rng(1)
 
+% load single_subj
 load sim_data
-Linit = dat.Linit;
-params = [0.14 0.1 0.066];
-f_targ = @(L) sim_error(L,params);
-Nfreq = 7;
-options = optimoptions('fmincon','Display','iter','MaxIterations',10);
-Lopt = fmincon(f_targ,Linit,[],[],[],[],[],[],[],options);
-
+Nsim = 1;
+for i = 1:Nsim
+%     Linit = [80.6343 26.6417 5.5583 0 0 0
+%              0 0 0 80.6343 26.6417 5.5583];
+    Linit(:,:,i) = dat.Linit;
+%     Linit = [70 20 3 1 3 5
+%              3 2 3 90 22 6];
+    params = [0.14 0.1 0.066];
+    f_targ = @(L) sim_error(L,params);
+    Nfreq = 7;
+    options = optimoptions('fmincon','Display','iter','MaxIterations',3000,'MaxFunctionEvaluations',50000);
+    Lopt(:,:,i) = fmincon(f_targ,Linit(:,:,i),[],[],[],[],[],[],[],options);
+end
 % options = optimoptions('fminunc','Display','iter','MaxFunctionEvaluations',50000,'MaxIterations',3000,'Algorithm','quasi-newton');
 % 
 % Lopt = fminunc(f_targ,Linit,options);
-
+%%
 global ratio_opt
 
 % generate colormap for plotting

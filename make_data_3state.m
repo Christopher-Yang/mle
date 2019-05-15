@@ -1,4 +1,4 @@
-% generates data for MLE and saves into
+% generates data for MLE and saves into sim_data
 
 clear all
 rng(2);
@@ -6,9 +6,9 @@ rng(2);
 delt = 0.005; % time step length in secs
 start = 0; % starting position of the hand
 nReps = 2; % number of base periods to track
-nstep = ceil(42/delt); % number of time steps
-Nreps = 100;
-sigma = 50*sqrt(delt);
+nstep = ceil(50/delt); % number of time steps
+Nreps = 8;
+sigma = 200*sqrt(delt);
 
 % good values
 % G = 0.5, I = 0.05, tau = 0.066, Q2(1,1) = 1.3 
@@ -66,12 +66,17 @@ for i = 2:n
 end
 L = inv(R + Bd'*P(:,:,i)*Bd)*(Bd'*P(:,:,i)*Ad);
 
+% params = [80.6343 26.6417 5.5583];
+% params = [90 26.6417 5.5583];
+% L = [params zeros(1,3)
+%     zeros(1,3) params];
+
 %simulate trajectory
 for i = 2:nstep
     u(:,:,i) = -L*x(:,:,i-1);
     x(:,:,i) = Ad*x(:,:,i-1) + Bd*(u(:,:,i)+sigma*randn(1,Nreps));
     
-    % set target location
+    % set absolute hand position
     hand(:,:,i) = hand(:,:,i-1) + (x([1 4],:,i) - x([1 4],:,i-1));
     x([1 4],:,i) = hand(:,:,i) - repmat(target(:,i),[1 Nreps]);
 end
@@ -86,10 +91,12 @@ end
 % compute fourier transforms
 % e = round(50/delt); % figure out the number of time steps to throw away
 e = 2/delt;
-delay2 = 0.25; % delay for replicating target
+delay = 0.4/delt; % modeling sensorimotor delay
+start = e+delay+1;
+stop = (40/delt);
 
-traj = hand(:,:,(e+1):end);
-traj(:,Nreps+1,:) = target(:,(e+1):end);
+traj = hand(:,:,(e+1):(e+1)+stop);
+traj(:,Nreps+1,:) = target(:,start:start+stop);
 traj_avg = mean(traj,3);
 traj_fft = fft(traj - repmat(traj_avg,[1 1 length(traj)]),[],3);
 

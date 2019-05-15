@@ -12,7 +12,7 @@ else
     params = params;
 end
 
-Nreps = 10; % number of simulations to run
+Nreps = 50; % number of simulations to run
 sim = freq_sim_noisy_arm_3state(L,params,Nreps); % perform simulations
 
 Nfreq = length(sim.freq);
